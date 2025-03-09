@@ -55,7 +55,7 @@ const App = () => {
           onClick={() => setScreenVisible(!screenVisible)}
           darkMode={darkMode}
         />
-        <Antenna position={[0, 0.5, -3]}  />
+        <Antenna position={[0, 0.5, -10]}  />
         <Screen visible={screenVisible} />
 
 
