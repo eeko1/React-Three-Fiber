@@ -1,20 +1,22 @@
-import { Canvas } from '@react-three/fiber';
-import { useMemo } from 'react';
-
-import './App.css';
-import Box from './components/Box';
-import Ground from './components/Ground';
+import { Canvas } from "@react-three/fiber";
+import { useState, useMemo } from "react";
+import "./App.css";
+import Ground from "./components/Ground";
 import {
   FlyControls,
   PointerLockControls,
   Sky,
   Stats,
-} from '@react-three/drei';
-import Crosshair from './components/Crosshair';
-import Model2 from './components/Model2';
+} from "@react-three/drei";
+import Crosshair from "./components/Crosshair";
+import Button from "./components/Button";
+import Screen from "./components/Screen";
+import Antenna from "./components/Antenna";
 
 const App = () => {
-  const gridSize = 50; // Reduced from 100 to 50 for better performance
+  const gridSize = 50;
+  const [screenVisible, setScreenVisible] = useState(false);
+  const [darkMode, setDarkMode] = useState(false);
 
   const grounds = useMemo(() => {
     const items = [];
@@ -25,12 +27,12 @@ const App = () => {
             key={`${i}-${j}`}
             position={[i - gridSize / 2, 0, j - gridSize / 2]}
             frustumCulled={true}
-          />,
+          />
         );
       }
     }
     return items;
-  }, []);
+  }, [gridSize]);
 
   return (
     <section className="three-canvas">
@@ -38,26 +40,25 @@ const App = () => {
         <PointerLockControls />
         <FlyControls rollSpeed={0} movementSpeed={5} dragToLook />
         <Stats />
-        <Sky sunPosition={[-50, 40, 50]} />
-        <ambientLight />
-        <directionalLight position={[-50, 40, 50]} castShadow />
-        <Box
-          onClick={() => {
-            console.log('Box 1 klikattu');
-          }}
-          rotation={[0, 1, 0]}
-          position={[-1, 2, 0]}
-          scale={[4, 4, 4]}
+        <Sky sunPosition={darkMode ? [-100, -40, -50] : [-50, 40, 50]} />
+        <ambientLight intensity={darkMode ? 0.1 : 0.5} />
+        <directionalLight position={darkMode ? [-100, -40, -50] : [-50, 40, 50]} castShadow />
+        <Button
+          position={[-1, 0.2, -1]}
+          onClick={() => setDarkMode(!darkMode)}
+          activeColor="black"
+          inactiveColor="yellow"
+          darkMode={darkMode}
         />
-        <Box
-          onClick={() => {
-            console.log('Box 2 klikattu');
-          }}
-          rotation={[0, 1, 0]}
-          position={[5, 2, -2]}
-          scale={[4, 4, 4]}
+        <Button
+          position={[1, 0.2, -1]}
+          onClick={() => setScreenVisible(!screenVisible)}
+          darkMode={darkMode}
         />
-        <Model2 position={[7, 0.42, 5]} scale={[0.1, 0.1, 0.1]} />
+        <Antenna position={[0, 0.5, -3]}  />
+        <Screen visible={screenVisible} />
+
+
         {grounds}
       </Canvas>
       <Crosshair />
